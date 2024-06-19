@@ -37,7 +37,7 @@ def detect_objects(model, image):
     detections = []
     for result in results:
         for detection in result.boxes.cls:
-            detections.append(names[detection.class_id])
+            detections.append(names[int(detection)])
 
     # Calculate the time taken
     time_taken = end_time - start_time
