@@ -2,6 +2,7 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
+import cv2 as cv
 from ultralytics import YOLO
 import time
 
@@ -21,6 +22,7 @@ st.sidebar.title('Object Detection Task')
 st.sidebar.subheader('Detection')
 st.sidebar.subheader('Test Samples')
 
+
 # Function to perform object detection, return labels with confidence, and measure time
 def detect_objects(model, image):
     # Start the timer
@@ -34,10 +36,7 @@ def detect_objects(model, image):
 
     # Extract labels and confidence scores
     names = model.names
-    detections = []
-    for result in results:
-        for detection in result.boxes.cls:
-            detections.append(names[int(detection)])
+    detections = [(names[int(detection.cls)], float(detection.conf)) for detection in results.pred[0]]
 
     # Calculate the time taken
     time_taken = end_time - start_time
@@ -55,6 +54,12 @@ if uploaded_file is not None:
 
     # Convert the image to a format suitable for OpenCV
     image = np.array(image)
+
+    # Convert image to BGR if it's not (YOLO expects BGR format)
+    if image.shape[2] == 4:
+        image = cv.cvtColor(image, cv.COLOR_RGBA2BGR)
+    else:
+        image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
 
     # Button to trigger image analysis
     if st.button("Analyse Image"):
