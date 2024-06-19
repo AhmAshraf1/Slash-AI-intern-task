@@ -36,7 +36,7 @@ def detect_objects(model, image):
 
     # Extract labels and confidence scores
     names = model.names
-    detections = [(names[int(detection.cls)], float(detection.conf)) for detection in results.pred[0]]
+    detections = [(names[int(det[5])], float(det[4])) for det in results[0].boxes.data.tolist()]
 
     # Calculate the time taken
     time_taken = end_time - start_time
