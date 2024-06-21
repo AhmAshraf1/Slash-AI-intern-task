@@ -7,10 +7,11 @@ from PIL import Image
 def load_image(image_path):
     image = Image.open(image_path)
 
-    # Convert the image to a format suitable for OpenCV
+    # Convert the image to array
     image = np.array(image)
 
     return image
+
 
 def detect_objects(model, image):
     start_time = time.time()
@@ -50,6 +51,7 @@ def draw_bounding_boxes(image, detections, boxes):
 
         # Add the label and confidence score to the image
         label_text = f"{label} {confidence * 100:.2f}%"
-        cv.putText(image, label_text, (x_min, y_min - 5), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+        cv.putText(image, label_text, (x_min, y_min - 5),
+                   cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
     return image
