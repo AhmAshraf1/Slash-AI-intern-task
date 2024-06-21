@@ -9,9 +9,7 @@ import time
 # Load the pre-trained YOLOv8 models
 models = {
     "YOLOv8l": YOLO('yolov8l.pt'),
-    "YOLOv8m": YOLO('yolov8m.pt'),
     "YOLOv8l-OIV7": YOLO('yolov8l-oiv7.pt'),
-    "YOLOv8m-OIV7": YOLO('yolov8m-oiv7.pt')
 }
 
 # Streamlit app
