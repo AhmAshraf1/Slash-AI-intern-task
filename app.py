@@ -1,10 +1,8 @@
 # Import the required libraries
 import streamlit as st
-import numpy as np
 from PIL import Image
-import cv2 as cv
 from ultralytics import YOLO
-import time
+from utils.py import detect_objects, load_image
 
 # Load the pre-trained YOLOv8 models
 models = {
@@ -17,29 +15,13 @@ st.title("Object Detection with Multiple YOLOv8 Models")
 st.write("Upload an image and click 'Analyse Image' to detect objects with different models.")
 
 st.sidebar.title('Object Detection Task')
-st.sidebar.subheader('Detection')
 st.sidebar.subheader('Test Samples')
 
 
-# Function to perform object detection, return labels with confidence, and measure time
-def detect_objects(model, image):
-    # Start the timer
-    start_time = time.time()
+obj_detect = st.button(label="Image with Detected Objects", type="primary")
+if obj_detect:
+    st.switch_page("Images with Detected Objects")
 
-    # Perform object detection
-    results = model(image)
-
-    # End the timer
-    end_time = time.time()
-
-    # Extract labels and confidence scores
-    names = model.names
-    detections = [(names[int(det[5])], float(det[4])) for det in results[0].boxes.data.tolist()]
-
-    # Calculate the time taken
-    time_taken = end_time - start_time
-
-    return detections, time_taken
 
 
 # File uploader widget
@@ -50,33 +32,29 @@ if uploaded_file is not None:
     image = Image.open(uploaded_file)
     st.image(image, caption='Uploaded Image', use_column_width=True)
 
-    # Convert the image to a format suitable for OpenCV
-    image = np.array(image)
 
-    # Convert image to BGR if it's not (YOLO expects BGR format)
-    if image.shape[2] == 4:
-        image = cv.cvtColor(image, cv.COLOR_RGBA2BGR)
-    else:
-        image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
 
     # Button to trigger image analysis
     if st.button("Analyse Image"):
         st.write("Detecting objects...")
 
-        # Perform object detection with each model and store the results
         all_results = {}
         for model_name, model in models.items():
-            detected_labels_confidences, detection_time = detect_objects(model, image)
+            detected_labels_confidences, detection_time, bounding_boxes = detect_objects(model, image)
             all_results[model_name] = {
                 "detections": detected_labels_confidences,
-                "time": detection_time
-            }
+                "time": detection_time,
+                "Boxes": bounding_boxes}
 
         # Display the results for each model
         for model_name, results in all_results.items():
-            st.write(f"Results for {model_name}:")
-            st.write(f"Time taken for detection: {results['time']:.2f} seconds")
-            st.write("Detected Objects:")
+            print(f"Results for {model_name}:")
+            print(f"Time taken for detection: {results['time']:.2f} seconds")
+            print(f"Number of detected objects: {len(results['detections'])}\n")
+            print("Detected Objects:")
+            labels = []
             for label, confidence in results["detections"]:
-                st.write(f'Label: {label}, Confidence: {confidence:.2f}')
-            st.write("\n")
+                print(f'Label: {label}, Confidence: {confidence * 100:.2f}%')
+                labels.append(label)
+            print(f"Names of the components detected in the uploaded image: {labels}")
+            print('\n')
