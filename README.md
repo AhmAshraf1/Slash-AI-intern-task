@@ -51,7 +51,7 @@ you can access the web app from below.
 - you need to click Analyse image button to start object detection, It shows the results with different [features](#features)
 
 ## Demo
-![video_demo.mov](#video_demo.mov)
+![Demo Image for the project](/demo.png)
 
 ## Models 
 - Here is the link I used to download YOLOv8 model, YOLOv8l & YOLOv8m,trained on COCO 2017 Dataset [Models Link](https://github.com/ultralytics/ultralytics/blob/main/docs/en/tasks/detect.md)
