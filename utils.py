@@ -1,10 +1,11 @@
 import time
 import numpy as np
 import cv2 as cv
+from PIL import Image
 
 
 def load_image(image_path):
-    image = cv.imread(image_path)
+    image = Image.open(image_path)
 
     # Convert the image to a format suitable for OpenCV
     image = np.array(image)
