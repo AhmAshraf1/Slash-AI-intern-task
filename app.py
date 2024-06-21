@@ -1,28 +1,17 @@
-# Import the required libraries
 import streamlit as st
 from ultralytics import YOLO
 from utils import detect_objects, load_image, draw_bounding_boxes
 
-# Load the pre-trained YOLOv8 models
 models = {
     "YOLOv8l": YOLO('yolov8l.pt'),
     "YOLOv8l-OIV7": YOLO('yolov8l-oiv7.pt'),
 }
 
-# Streamlit app
-st.title("Object Detection with Multiple YOLOv8 Models")
+st.title("Object Detection with YOLOv8 Model")
 st.write("Upload an image and click 'Analyse Image' to detect objects with different models.")
 
-st.sidebar.title('Object Detection Task')
-st.sidebar.subheader('Test Samples')
 
-
-obj_detect = st.button(label="Image with Detected Objects", type="primary")
-if obj_detect:
-    st.switch_page("Images with Detected Objects")
-
-
-# File uploader widget
+# Image uploader widget
 uploaded_file = st.file_uploader("Choose an image to analyze...", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
