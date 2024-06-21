@@ -1,7 +1,5 @@
 # Import the required libraries
 import streamlit as st
-from PIL import Image
-import matplotlib.pyplot as plt
 from ultralytics import YOLO
 from utils import detect_objects, load_image, draw_bounding_boxes
 
@@ -39,24 +37,22 @@ if uploaded_file is not None:
         all_results = {}
         for model_name, model in models.items():
             detected_labels_confidences, detection_time, bounding_boxes = detect_objects(model, image)
-            all_results[model_name] = {
-                "detections": detected_labels_confidences,
-                "time": detection_time,
-                "Boxes": bounding_boxes}
+            all_results[model_name] = {"detections": detected_labels_confidences,
+                                       "time": detection_time,
+                                       "Boxes": bounding_boxes}
 
         # Display the results for each model
         for model_name, results in all_results.items():
-            print(f"Results for {model_name}:")
-            print(f"Time taken for detection: {results['time']:.2f} seconds")
-            print(f"Number of detected objects: {len(results['detections'])}\n")
-            print("Detected Objects:")
-            labels = []
+            st.write(f"Results for {model_name}:")
+            st.write(f"Time taken for detection: {results['time']:.2f} seconds")
+            st.write(f"Number of detected objects: {len(results['detections'])}")
 
+            labels = []
             for label, confidence in results["detections"]:
-                print(f'Label: {label}, Confidence: {confidence * 100:.2f}%')
                 labels.append(label)
-            print(f"Names of the components detected in the uploaded image: {labels}")
-            print('\n')
+                st.write(f'Label: {label}, Confidence: {confidence * 100:.2f}%')
+
+            st.write(f"Names of the components detected in the uploaded image: {labels}")
 
             image_with_bb = image.copy()
 
@@ -65,10 +61,7 @@ if uploaded_file is not None:
                                                             all_results[model_name]["Boxes"])
 
             # Display the image with bounding boxes
-            plt.title(f"Bounding Boxes for {model_name}")
-            plt.imshow(image_with_bounding_boxes)
-            plt.axis('off')
-            plt.show()
+            st.image(image_with_bounding_boxes, caption=f"Bounding Boxes for {model_name}", use_column_width=True)
 
             # clear the image after each plot
             image = image.copy()
